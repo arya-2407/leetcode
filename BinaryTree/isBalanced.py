@@ -1,20 +1,16 @@
-# Definition for a binary tree node.
-# class TreeNode:
-#     def __init__(self, val=0, left=None, right=None):
-#         self.val = val
-#         self.left = left
-#         self.right = right
-
 class Solution:
     def isBalanced(self, root: Optional[TreeNode]) -> bool:
-        def maxDepth(root):
+        def dfs(root):
+            #base case
             if not root:
-                return 0
-            return 1 + max(maxDepth(root.left),maxDepth(root.right))
-        
-        if not root:
-            return True
-        left = maxDepth(root.left)
-        right = maxDepth(root.right)
-        return (abs(left-right) <= 1 and 
-                self.isBalanced(root.left) and self.isBalanced(root.right))
+                return [True,0]
+                
+            # idea is that tree is balanced when:
+            #  1.when the heights of lChild and rChild are lesser than 1
+            #  2. lChild and rChild trees are balanced themselves
+            left = dfs(root.left)
+            right = dfs(root.right)
+            balanced = (left[0] and right[0] and 
+                        abs(left[1] - right[1]) <= 1)
+            return [balanced,1+max(left[1],right[1])]
+        return dfs(root)[0]
